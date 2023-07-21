@@ -1,9 +1,8 @@
 const BASE_URL = '/api'
 
-export const loginReq = async (formData) => {
+export const registerReq = async (formData) => {
     try {
-        console.log(formData)
-        const resp = await fetch(`http://127.0.0.1:8080${BASE_URL}/login`, {
+        const resp = await fetch(`http://127.0.0.1:8080${BASE_URL}/register`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
@@ -20,7 +19,7 @@ export const loginReq = async (formData) => {
         } else {
             throw new Error(data.msg)
         }
-    } catch(error) {
+    } catch(error){
         throw new Error(error.message)
     }
 }

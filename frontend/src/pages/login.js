@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import {Navigate} from "react-router-dom";
 import styled from 'styled-components'
 import { loginReq } from "../api/login";
+import { useNavigate } from "react-router-dom"
 
 const LoginPage = styled.div`
   display: flex;
@@ -22,13 +23,15 @@ const LoginForm = styled.form`
   max-width: 300px;
 `;
 
-const Login = ({history}) => {
+const Login = () => {
+    let history = useNavigate()
+
     const [formData, setFormData] = useState({username: '', password: ''})
     const [error, setError] = useState('')
     const [isLoggedIn, setIsLoggedIn] = useState(false)
 
     const handleRegisterClick = () => {
-        history.push('/register')
+        history("/register", {replace: true})
     }
 
     const handleInputChange = (event) => {
@@ -39,12 +42,11 @@ const Login = ({history}) => {
     const handleLoginSubmit = async (e) => {
         e.preventDefault()
         try {
-            const data = await loginReq(formData)
-            console.log(data)
+            await loginReq(formData)
             setError('')
             setIsLoggedIn(true)
         } catch(error) {
-            setError('Invalid username or password');
+            setError(error.message);
             console.error('Login error:', error);
         }
     }
@@ -64,16 +66,18 @@ const Login = ({history}) => {
                 id="username" 
                 name="username"
                 value={formData.username}
-                onChange={handleInputChange} 
+                onChange={handleInputChange}
+                required={true}
                 />
 
                 <label htmlFor="password">Password</label>
                 <input 
                 type="password" 
                 id="password" 
-                name="password" 
+                name="password"
                 value={formData.password}
                 onChange={handleInputChange}
+                required={true}
                 />
 
                 <button type="submit">Confirm</button>

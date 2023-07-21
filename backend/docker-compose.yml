@@ -1,0 +1,12 @@
+version: '3'
+
+services:
+  mysql:
+    image: 'mysql:latest'
+    ports:
+      - 3306:3306
+    environment:
+      - MYSQL_DATABASE=todolist
+      - MYSQL_USER=xiaofei
+      - MYSQL_PASSWORD=2021110003
+      - MYSQL_RANDOM_ROOT_PASSWORD="yes"

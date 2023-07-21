@@ -13,7 +13,7 @@ const TodoList = () => {
     }
     const FILTER_NAME = Object.keys(FILTER_MAP)
 
-    const [tasks, setTasks] = useState([])
+    const [tasks, setTasks] = useState([{ id: "todo-0", name: "Eat", completed: true }])
     const [filter, setFilter] = useState("All")
 
     const toggleTaskCompleted = (id) => {
@@ -33,7 +33,7 @@ const TodoList = () => {
 
     const addTask = (name) => {
         const newTask = {id: `todo-${nanoid()}`, name, completed: false}
-        setTasks([...taskList, newTask])
+        setTasks([...tasks, newTask])
     }
 
     const editTask = (id, newName) => {

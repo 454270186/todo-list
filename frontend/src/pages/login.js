@@ -3,6 +3,7 @@ import {Navigate} from "react-router-dom";
 import styled from 'styled-components'
 import { loginReq } from "../api/login";
 import { useNavigate } from "react-router-dom"
+import { getCookie, setCookie } from "../utils/cookie";
 
 const LoginPage = styled.div`
   display: flex;
@@ -42,7 +43,12 @@ const Login = () => {
     const handleLoginSubmit = async (e) => {
         e.preventDefault()
         try {
-            await loginReq(formData)
+            const userID = await loginReq(formData)
+
+            // store user id
+            setCookie("user_id", userID)
+            console.log(getCookie("user_id"))
+            
             setError('')
             setIsLoggedIn(true)
         } catch(error) {

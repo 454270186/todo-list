@@ -24,7 +24,7 @@ func Login(c *gin.Context) {
 		return
 	}
 
-	err := serviceHandler.Login(loginData.Username, loginData.Password)
+	userID, err := serviceHandler.Login(loginData.Username, loginData.Password)
 	if err != nil {
 		c.JSON(400, dto.LoginRes{
 			StatusCode: -1,
@@ -36,6 +36,7 @@ func Login(c *gin.Context) {
 	c.JSON(200, dto.LoginRes{
 		StatusCode: 0,
 		Msg: "login successfully",
+		UserID: userID,
 	})
 }
 
@@ -49,7 +50,7 @@ func Register(c *gin.Context) {
 		return
 	}
 
-	err := serviceHandler.Register(registerData.Username, registerData.Password)
+	newUserID, err := serviceHandler.Register(registerData.Username, registerData.Password)
 	if err != nil {
 		c.JSON(400, dto.RegisterRes{
 			StatusCode: -1,
@@ -62,5 +63,10 @@ func Register(c *gin.Context) {
 	c.JSON(200, dto.RegisterRes{
 		StatusCode: 0,
 		Msg: "register successfully",
+		UserID: newUserID,
 	})
+}
+
+func GetTasksByID(c *gin.Context) {
+	
 }

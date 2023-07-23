@@ -18,30 +18,30 @@ func NewServiceHandler() *ServiceHandler {
 	}
 }
 
-func (s *ServiceHandler) Login(username, password string) error {
+func (s *ServiceHandler) Login(username, password string) (int, error) {
 	log.Println(username, password)
 	user, err := s.userDB.FindUser(context.Background(), username, password)
 	if err != nil {
-		return err
+		return 0, err
 	}
 	log.Println(user)
 
-	return nil
+	return user.ID, nil
 }
 
-func (s *ServiceHandler) Register(username, password string) error {
+func (s *ServiceHandler) Register(username, password string) (int, error) {
 	isExist, err := s.userDB.IsUserExist(context.Background(), username)
 	if err != nil {
-		return errors.New("database error")
+		return 0, errors.New("database error")
 	}
 	if isExist {
-		return errors.New("user is exist")
+		return 0, errors.New("user is exist")
 	}
 
-	err = s.userDB.CreateUser(context.Background(), username, password)
+	newUserID, err := s.userDB.CreateUser(context.Background(), username, password)
 	if err != nil {
-		return errors.New("database error")
+		return 0, errors.New("database error")
 	}
 
-	return nil
+	return newUserID, nil
 }

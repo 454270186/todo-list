@@ -13,9 +13,11 @@ func NewRouter() *gin.Engine {
 	r.Use(cors.Default())
 
 	api := r.Group("/api")
-
 	api.POST("/login", handler.Login)
 	api.POST("/register", handler.Register)
+
+	task := api.Group("/task")
+	task.GET("/{user_id}", handler.GetTasksByID)
 
 	return r
 }

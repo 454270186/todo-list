@@ -3,6 +3,7 @@ package dal
 import (
 	"context"
 	"errors"
+	"log"
 
 	"gorm.io/gorm"
 )
@@ -21,8 +22,19 @@ func NewUserDB() UserDB {
 	}
 }
 
-func (u *UserDB) CreateUser(ctx context.Context, username, password string) error {
-	return DB.WithContext(ctx).Create(&Users{Username: username, Password: password}).Error
+func (u *UserDB) CreateUser(ctx context.Context, username, password string) (int ,error) {
+	newUser := Users{
+		Username: username,
+		Password: password,
+	}
+
+	err := DB.WithContext(ctx).Create(&newUser).Error
+	if err != nil {
+		log.Println(err)
+		return 0, errors.New("database error")
+	}
+
+	return newUser.ID, nil
 }
 
 func (u *UserDB) FindUser(ctx context.Context, username, password string) (*Users, error) {
@@ -30,7 +42,7 @@ func (u *UserDB) FindUser(ctx context.Context, username, password string) (*User
 		Username: username,
 		Password: password,
 	}
-	err := DB.WithContext(ctx).First(&Users{}, user).Error
+	err := DB.WithContext(ctx).First(&user).Error
 	if err != nil {
 		if errors.Is(err, gorm.ErrRecordNotFound) {
 			return nil, errors.New("user is not exist")

@@ -1,7 +1,6 @@
 const BASE_URL = '/api'
 
 export const registerReq = async (formData) => {
-    try {
         const resp = await fetch(`http://127.0.0.1:8080${BASE_URL}/register`, {
             method: 'POST',
             headers: {
@@ -19,7 +18,6 @@ export const registerReq = async (formData) => {
         } else {
             throw new Error(data.msg)
         }
-    } catch(error){
-        throw new Error(error.message)
-    }
+
+        return data.user_id
 }

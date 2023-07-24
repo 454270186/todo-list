@@ -89,3 +89,11 @@ func (s *ServiceHandler) AddNewTask(userID int, name string, taskID string) erro
 func (s *ServiceHandler) DelTaskByID(taskID string) error {
 	return s.taskDB.Del(context.Background(), taskID)
 }
+
+func (s *ServiceHandler) ChangeName(taskID, newName string) error {
+	return s.taskDB.UpdateName(context.Background(), taskID, newName)
+}
+
+func (s *ServiceHandler) ChangeCompleted(taskID string) error {
+	return s.taskDB.UpdateCompleted(context.Background(), taskID)
+}

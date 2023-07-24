@@ -2,6 +2,7 @@ package dal
 
 import (
 	"context"
+	"log"
 
 	"gorm.io/gorm"
 )
@@ -36,4 +37,26 @@ func (t *TaskDB) Add(ctx context.Context, newTask *Tasks) error {
 
 func (t *TaskDB) Del(ctx context.Context, taskID string) error {
 	return t.DB.WithContext(ctx).Delete(&Tasks{ID: taskID}).Error
+}
+
+func (t *TaskDB) UpdateName(ctx context.Context, taskID, newName string) error {
+	log.Println("asdasda")
+	return t.DB.WithContext(ctx).Model(&Tasks{ID: taskID}).Update("name", newName).Error
+}
+
+func (t *TaskDB) UpdateCompleted(ctx context.Context, taskID string) error {
+	var task Tasks
+    err := t.DB.WithContext(ctx).Where("id = ?", taskID).First(&task).Error
+    if err != nil {
+        return err
+    }
+
+    task.Completed = !task.Completed
+
+    err = t.DB.WithContext(ctx).Save(&task).Error
+    if err != nil {
+        return err
+    }
+
+    return nil
 }

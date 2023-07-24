@@ -8,6 +8,7 @@ import { getCookie } from "../utils/cookie";
 import { getTasksByID } from "../api/gettasks";
 import { addNewTask } from "../api/addtask";
 import { deleteTask } from "../api/deletetask";
+import { editName, editCompleted } from "../api/edittask";
 
 const TodoList = () => {
     const FILTER_MAP = {
@@ -20,7 +21,8 @@ const TodoList = () => {
     const [tasks, setTasks] = useState([])
     const [filter, setFilter] = useState("All")
 
-    const toggleTaskCompleted = (id) => {
+    const toggleTaskCompleted = async (id) => {
+        let originTasks = tasks
         const updateTasks = tasks.map((task) => {
             if (id === task.id) {
                 return {...task, completed: !task.completed}
@@ -28,6 +30,11 @@ const TodoList = () => {
             return task
         })
         setTasks(updateTasks)
+
+        const isSuccess = await editCompleted(id)
+        if (!isSuccess) {
+            setTasks(originTasks)
+        }
     }
 
     const delTask = async (id) => {
@@ -53,7 +60,8 @@ const TodoList = () => {
         }
     }
 
-    const editTask = (id, newName) => {
+    const editTask = async (id, newName) => {
+        let originTasks = tasks
         const editedTaskList = tasks.map((task) => {
 			if (task.id === id) {
 				return {...task, name: newName}
@@ -62,6 +70,11 @@ const TodoList = () => {
 		})
 
 		setTasks(editedTaskList)
+
+        const isSuccess = await editName(id, newName)
+        if (!isSuccess) {
+            setTasks(originTasks)
+        }
     }
 
     useEffect(()=>{

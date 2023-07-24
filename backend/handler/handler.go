@@ -1,6 +1,7 @@
 package handler
 
 import (
+	"fmt"
 	"log"
 	"strconv"
 	"todolist/dto"
@@ -161,5 +162,53 @@ func DelTask(c *gin.Context) {
 	c.JSON(200, gin.H {
 		"status_code": 0,
 		"msg": "delete task successfully",
+	})
+}
+
+func EditTask(c *gin.Context) {
+	taskID := c.Query("task_id")
+	if taskID == "" {
+		c.JSON(400, gin.H {
+			"status_code": -1,
+			"msg": "task id cannot be empty",
+		})
+		return
+	}
+
+	action := c.Query("action") // 1: name, 2: completed
+	fmt.Println(action)
+	switch action {
+	case "1":
+		newName := c.Query("new_name")
+		if newName == "" {
+			c.JSON(400, gin.H{
+				"status_code": -1,
+				"msg": "new name cannot be empty",
+			})
+			return
+		}
+		
+		err := serviceHandler.ChangeName(taskID, newName)
+		if err != nil {
+			c.JSON(400, gin.H {
+				"status_code": -1,
+				"msg": err.Error(),
+			})
+			return
+		}
+	case "2":
+		err := serviceHandler.ChangeCompleted(taskID)
+		if err != nil {
+			c.JSON(400, gin.H {
+				"status_code": -1,
+				"msg": err.Error(),
+			})
+			return
+		}
+	}
+
+	c.JSON(200, gin.H{
+		"status_code": 0,
+		"msg": "update succussfully",
 	})
 }

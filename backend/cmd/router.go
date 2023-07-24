@@ -20,6 +20,7 @@ func NewRouter() *gin.Engine {
 	task.GET("/:user_id", handler.GetTasksByID)
 	task.POST("/add/", handler.AddTask)
 	task.POST("/del/", handler.DelTask)
+	task.POST("/edit/", handler.EditTask)
 
 	return r
 }

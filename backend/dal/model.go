@@ -7,8 +7,8 @@ type Users struct {
 }
 
 type Tasks struct {
-	ID          int    `gorm:"primary_key"`
-	UserID      int    `gorm:"column:user_id"`
-	Title       string `gorm:"column:title"`
-	IsCompleted bool   `gorm:"column:is_completed"`
+	ID        string    `gorm:"primary_key"`
+	UserID    int    `gorm:"column:user_id"`
+	Name      string `gorm:"column:name"`
+	Completed bool   `gorm:"column:completed"`
 }

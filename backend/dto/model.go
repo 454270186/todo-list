@@ -21,3 +21,10 @@ type RegisterRes struct {
 	Msg        string `json:"msg"`
 	UserID     int    `json:"user_id"`
 }
+
+type Task struct {
+	ID        string    `json:"id"`
+	UserID    int    `json:"user_id"`
+	Name      string `json:"name"`
+	Completed bool   `json:"completed"`
+}

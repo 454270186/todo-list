@@ -1,9 +1,13 @@
 import React from "react";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { nanoid } from "nanoid";
 import Todo from "../components/Todo";
 import Form from "../components/Form";
 import FilterButton from "../components/FilterButton";
+import { getCookie } from "../utils/cookie";
+import { getTasksByID } from "../api/gettasks";
+import { addNewTask } from "../api/addtask";
+import { deleteTask } from "../api/deletetask";
 
 const TodoList = () => {
     const FILTER_MAP = {
@@ -13,7 +17,7 @@ const TodoList = () => {
     }
     const FILTER_NAME = Object.keys(FILTER_MAP)
 
-    const [tasks, setTasks] = useState([{ id: "todo-0", name: "Eat", completed: true }])
+    const [tasks, setTasks] = useState([])
     const [filter, setFilter] = useState("All")
 
     const toggleTaskCompleted = (id) => {
@@ -26,14 +30,27 @@ const TodoList = () => {
         setTasks(updateTasks)
     }
 
-    const delTask = (id) => {
+    const delTask = async (id) => {
+        let originTasks = tasks
         const remainTasks = tasks.filter((task) => id !== task.id)
         setTasks(remainTasks)
+
+        const isSuccess = await deleteTask(id)
+        if (!isSuccess) {
+            setTasks(originTasks)
+        }
     }
 
-    const addTask = (name) => {
+    const addTask = async (name) => {
+        let originTasks = tasks
         const newTask = {id: `todo-${nanoid()}`, name, completed: false}
         setTasks([...tasks, newTask])
+
+        const userID = getCookie("user_id")
+        const isSuccess = await addNewTask(userID, name, newTask.id)
+        if (!isSuccess) {
+            setTasks(originTasks)
+        }
     }
 
     const editTask = (id, newName) => {
@@ -47,17 +64,33 @@ const TodoList = () => {
 		setTasks(editedTaskList)
     }
 
+    useEffect(()=>{
+        // get tasks by user id
+        const userID = getCookie("user_id")
+        let gotTasks
+        const gettasks = async () => {
+        try {
+            gotTasks = await getTasksByID(userID)
+            
+            setTasks(gotTasks)
+        } catch(error) {
+            console.error('error:', error)
+        }
+    }
+    gettasks()
+    }, [])
+
     const taskList = tasks.filter(FILTER_MAP[filter]).map((task) => {
-		return <Todo 
-			id={task.id} 
-			completed={task.completed} 
-			name={task.name}
-			key={task.id}
-			toggleTaskCompleted={toggleTaskCompleted}
-			delTask={delTask}
-			editTask={editTask}
-		/>
-	})
+        return <Todo 
+            id={task.id} 
+            completed={task.completed} 
+            name={task.name}
+            key={task.id}
+            toggleTaskCompleted={toggleTaskCompleted}
+            delTask={delTask}
+            editTask={editTask}
+        />
+    })
 
     const taskNano = taskList.length !== 1 ? "tasks" : "task"
 	const headingText = `${taskList.length} ${taskNano} remaining`

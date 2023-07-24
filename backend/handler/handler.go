@@ -2,6 +2,7 @@ package handler
 
 import (
 	"log"
+	"strconv"
 	"todolist/dto"
 	"todolist/service"
 
@@ -68,5 +69,97 @@ func Register(c *gin.Context) {
 }
 
 func GetTasksByID(c *gin.Context) {
-	
+	userIDstr := c.Param("user_id")
+	if userIDstr == "" {
+		c.JSON(400, gin.H {
+			"status_code": -1,
+			"msg": "user id cannot be empty",
+		})
+		return
+	}
+
+	userID, err := strconv.Atoi(userIDstr)
+	if err != nil {
+		c.JSON(400, gin.H{
+			"status_code": -1,
+			"msg": "user id must be integer",
+		})
+		return
+	}
+
+	tasks, err := serviceHandler.GetTasksByID(userID)
+	if err != nil {
+		c.JSON(500, gin.H{
+			"status_code": -1,
+			"msg": "internal error: " + err.Error(),
+		})
+		return
+	}
+
+	c.JSON(200, gin.H{
+		"status_code": 0,
+		"msg": "successful",
+		"tasks": tasks,
+	})
+}
+
+func AddTask(c *gin.Context) {
+	taskID := c.Query("task_id")
+	taskName := c.Query("name")
+	userIDstr := c.Query("user_id")
+	if userIDstr == "" {
+		c.JSON(400, gin.H {
+			"status_code": -1,
+			"msg": "user id cannot be empty",
+		})
+		return
+	}
+
+	userID, err := strconv.Atoi(userIDstr)
+	if err != nil {
+		c.JSON(400, gin.H{
+			"status_code": -1,
+			"msg": "user id must be integer",
+		})
+		return
+	}
+
+	err = serviceHandler.AddNewTask(userID, taskName, taskID)
+	if err != nil {
+		c.JSON(400, gin.H {
+			"status_code": -1,
+			"msg": err.Error(),
+		})
+		return
+	}
+
+	c.JSON(200, gin.H {
+		"status_code": 0,
+		"msg": "add task successfully",
+	})
+}
+
+func DelTask(c *gin.Context) {
+	taskId := c.Query("task_id")
+	if taskId == "" {
+		c.JSON(400, gin.H {
+			"status_code": -1,
+			"msg": "task id cannot be empty",
+		})
+		return
+	}
+
+	err := serviceHandler.DelTaskByID(taskId)
+	if err != nil {
+		c.JSON(400, gin.H {
+			"status_code": -1,
+			"msg": err.Error(),
+		})
+		return
+	}
+
+	c.JSON(200, gin.H {
+		"status_code": 0,
+		"msg": "delete task successfully",
+	})
 }

@@ -17,7 +17,9 @@ func NewRouter() *gin.Engine {
 	api.POST("/register", handler.Register)
 
 	task := api.Group("/task")
-	task.GET("/{user_id}", handler.GetTasksByID)
+	task.GET("/:user_id", handler.GetTasksByID)
+	task.POST("/add/", handler.AddTask)
+	task.POST("/del/", handler.DelTask)
 
 	return r
 }

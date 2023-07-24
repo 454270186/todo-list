@@ -4,5 +4,10 @@
 ![react](https://img.shields.io/badge/React-61DAFB.svg?style=for-the-badge&logo=React&logoColor=black)
 ![mysql](https://img.shields.io/badge/MySQL-4479A1.svg?style=for-the-badge&logo=MySQL&logoColor=white)
 
-xia gou ba xiexie R E A C T<br>
-TuT
+### Frontend
+- JavaScript
+- React
+
+### Backend
+- Go
+- Gin

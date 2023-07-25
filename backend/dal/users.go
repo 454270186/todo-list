@@ -42,7 +42,7 @@ func (u *UserDB) FindUser(ctx context.Context, username, password string) (*User
 		Username: username,
 		Password: password,
 	}
-	err := DB.WithContext(ctx).First(&user).Error
+	err := DB.WithContext(ctx).Where("username = ? AND password = ?", username, password).First(&user).Error
 	if err != nil {
 		if errors.Is(err, gorm.ErrRecordNotFound) {
 			return nil, errors.New("user is not exist")

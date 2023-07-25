@@ -1,5 +1,6 @@
 import React from "react";
 import { useState, useEffect } from "react";
+import {Navigate} from "react-router-dom";
 import { nanoid } from "nanoid";
 import Todo from "../components/Todo";
 import Form from "../components/Form";
@@ -9,6 +10,7 @@ import { getTasksByID } from "../api/gettasks";
 import { addNewTask } from "../api/addtask";
 import { deleteTask } from "../api/deletetask";
 import { editName, editCompleted } from "../api/edittask";
+import Navbar from "../components/Navbar";
 
 const TodoList = () => {
     const FILTER_MAP = {
@@ -118,23 +120,36 @@ const TodoList = () => {
 				/>
 	})
 
+    const [toLogin, setTologin] = useState(false)
+
+    const logout = () => {
+        setTologin(true)
+    }
+
+    if (toLogin) {
+        return <Navigate to={'/login'} />
+    }
+
     return (
+        <>
+        <Navbar logout={logout} />
         <div className="todoapp stack-large">
-          <h1>Todo-List</h1>
-    
-          <Form addTask={addTask} />
-    
-          <div className="filters btn-group stack-exception">
-            {filterList}
-          </div>
-          <h2 id="list-heading">{headingText}</h2>
-          <ul
-            role="list"
-            className="todo-list stack-large stack-exception"
-            aria-labelledby="list-heading">
-                    {taskList}
-          </ul>
+            <h1>Todo-List</h1>
+
+            <Form addTask={addTask} />
+
+            <div className="filters btn-group stack-exception">
+                {filterList}
+            </div>
+            <h2 id="list-heading">{headingText}</h2>
+            <ul
+                role="list"
+                className="todo-list stack-large stack-exception"
+                aria-labelledby="list-heading">
+                {taskList}
+            </ul>
         </div>
+        </>
       );
 
 }
